@@ -203,11 +203,12 @@ function add_script_header(){
 			
 			$products = array();
 			$ecommerce = array();
-			$products['id'] = ($order_id != '') ? $order_id : '';
-			$products['total'] = ($order->data['total'] != '') ? $order->data['total'] : '';
-			$products['price'] = ($order->data['total'] != '') ? $order->data['total'] : '';
+			
+			$products['id'] = ($order_id != '') ? $order_id : '';			
+			
 			$products['tax'] = ($order->data['cart_tax'] != '') ? $order->data['cart_tax'] : '';
 			$products['shipping'] = ( $order->get_total_shipping() != '') ?  $order->get_total_shipping() : '';
+			
 			$products['currency'] = ($order->data['currency'] != '') ? $order->data['currency'] : '';
 			$products['country'] = ($default['country'] != '') ? $order->data['country'] : 'SE';
 			$products['language'] = ($order->data['language'] != '') ? $order->data['language'] : 'sv';
@@ -219,6 +220,7 @@ function add_script_header(){
         	
 			// Loop through ordered items
 				 $i = 0;
+				 $products['price'] = '';
 				foreach ($items as $item) {
 				 
 					$term_list = wp_get_post_terms($item['product_id'], 'product_cat', array('fields' => 'names'));
@@ -249,15 +251,16 @@ function add_script_header(){
 					$ecommerce['ecommerce']['purchase']['products']->variant = ($product->get_formatted_name() != '') ? $product->get_formatted_name() : '';
 					$ecommerce['ecommerce']['purchase']['products']->quantity = ($item['qty'] != '') ? $item['qty'] : '';
 					$ecommerce['ecommerce']['purchase']['products']->coupon = (!empty($coupons)) ? $coupons : '';	
-				  	
+				  	$products['price'] =  $products['price'] + $products['product'][$i]->price;
 				  $i++;	
 				}
-//             
+				$products['total'] = $products['price'] + $products['tax'] + $products['shipping'];
+            
 			//DataLayer Option	
 			
 			$ecommerce['ecommerce']['purchase']['actionField']['id'] = ($order_id != '') ? $order_id : '';
 			$ecommerce['ecommerce']['purchase']['actionField']['affiliation'] = ($affiliation != '') ? $affiliation : 'Online Store';
-			$ecommerce['ecommerce']['purchase']['actionField']['revenue'] = ($order->data['total'] != '') ? $order->data['total'] : '';
+			$ecommerce['ecommerce']['purchase']['actionField']['revenue'] = ($products['total'] != '') ? $products['total'] : '';
 			$ecommerce['ecommerce']['purchase']['actionField']['tax'] = ($order->data['cart_tax'] != '') ? $order->data['cart_tax'] : '';
 			$ecommerce['ecommerce']['purchase']['actionField']['shipping'] = ( $order->get_total_shipping() != '') ?  $order->get_total_shipping() : '';
 			$ecommerce['ecommerce']['purchase']['actionField']['coupon'] = (!empty($coupons)) ? $coupons : '';			
