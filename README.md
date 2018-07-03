@@ -10,4 +10,4 @@
 ### 1.0.0
 
 * Initial Public Release
-~Current Version:1.0.~
+~Current Version:1.0.2~
