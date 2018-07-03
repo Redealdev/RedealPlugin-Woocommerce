@@ -3,16 +3,15 @@
 Plugin Name: Redeal Referral Marketing
 Plugin URI: https://www.redeal.se
 Description: Redeal Referral Marketing
-Version: 1.0.2
+Version: 1.0.1
 Author: Redeal STHLM AB
 Author URI: https://www.redeal.se/en/get-started
 License: GPL2
 */
 
-	if ( is_admin() ) {
-		require_once dirname(__FILE__) . '/admin.php';
-
-
+	if ( is_admin() ) {		
+		
+		require_once dirname(__FILE__) . '/admin.php';	
 		
         function redeal_section_after_title( $args ) {
             ?>
@@ -264,12 +263,7 @@ function add_script_header(){
 			$ecommerce['ecommerce']['purchase']['actionField']['revenue'] = ($products['revenue'] != '') ? $products['revenue'] : '';
 			$ecommerce['ecommerce']['purchase']['actionField']['tax'] = ($products['tax'] != '') ? $products['tax'] : '';
 			$ecommerce['ecommerce']['purchase']['actionField']['shipping'] = ( $order->get_total_shipping() != '') ?  $order->get_total_shipping() : '';
-			$ecommerce['ecommerce']['purchase']['actionField']['coupon'] = (!empty($coupons)) ? $coupons : '';			
-			echo "<pre>";
-			echo json_encode($products);
-			
-			exit;
-
+			$ecommerce['ecommerce']['purchase']['actionField']['coupon'] = (!empty($coupons)) ? $coupons : '';
             ?>
         <script type="text/javascript">
 			//debugger++;
