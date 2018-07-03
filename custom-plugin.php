@@ -3,7 +3,7 @@
 Plugin Name: Redeal Referral Marketing
 Plugin URI: https://www.redeal.se
 Description: Redeal Referral Marketing
-Version: 1.0
+Version: 1.0.2
 Author: Redeal STHLM AB
 Author URI: https://www.redeal.se/en/get-started
 License: GPL2
@@ -42,7 +42,7 @@ License: GPL2
 			</select>
 			<p class="description">
 			
-                <?php esc_html_e( 'Enable or disable Redeal extension', 'redeal' ); ?>
+                <?php esc_html_e( 'Enable or disable Redeal Referralmarketing extension', 'redeal' ); ?>
 			</p>
 
             <?php
@@ -84,10 +84,10 @@ License: GPL2
         function redeal_options_page() {
             // add top level menu page
             add_menu_page(
-                'Redeal Options',
+                'Redeal Referralmarketing Options',
                 'Redeal Configurations',
                 'manage_options',
-                'redeal-marketing',
+                'redeal-referral-marketing',
                 'redeal_options_page_html'
             );
 
@@ -197,18 +197,18 @@ function add_script_header(){
 				}
 			}
             $order = new WC_Order( $order_id );
-			
+		
 			$coupons = $order->get_used_coupons();
    			$items = $order->get_items();
 			
+			
 			$products = array();
 			$ecommerce = array();
-			
-			$products['id'] = ($order_id != '') ? $order_id : '';			
-			
-			$products['tax'] = ($order->data['cart_tax'] != '') ? $order->data['cart_tax'] : '';
+			$products['id'] = ($order_id != '') ? $order_id : '';
+			$products['total'] = ($order->data['total'] != '') ? $order->data['total'] : '';
+			$products['price'] = 0;
+			$products['tax'] = ($order->data['total_tax'] != '') ? $order->data['total_tax'] : '';
 			$products['shipping'] = ( $order->get_total_shipping() != '') ?  $order->get_total_shipping() : '';
-			
 			$products['currency'] = ($order->data['currency'] != '') ? $order->data['currency'] : '';
 			$products['country'] = ($default['country'] != '') ? $order->data['country'] : 'SE';
 			$products['language'] = ($order->data['language'] != '') ? $order->data['language'] : 'sv';
@@ -220,7 +220,6 @@ function add_script_header(){
         	
 			// Loop through ordered items
 				 $i = 0;
-				 $products['price'] = '';
 				foreach ($items as $item) {
 				 
 					$term_list = wp_get_post_terms($item['product_id'], 'product_cat', array('fields' => 'names'));
@@ -237,7 +236,8 @@ function add_script_header(){
 					  $products['product'][$i]->sku = $product->get_sku();				  			  
 					  $products['product'][$i]->price = ($item['total']) ? $item['total'] : '';
 					  $products['product'][$i]->category = ($term_list) ? implode(',',$term_list) : '';
-					  $products['product'][$i]->quantity = ($item['qty']) ? $item['qty'] : '';				  
+					  $products['product'][$i]->quantity = ($item['qty']) ? $item['qty'] : '';	
+					  $products['price'] = (string)($products['price'] + $products['product'][$i]->price);
 					 
 				  }
 			 
@@ -251,20 +251,24 @@ function add_script_header(){
 					$ecommerce['ecommerce']['purchase']['products']->variant = ($product->get_formatted_name() != '') ? $product->get_formatted_name() : '';
 					$ecommerce['ecommerce']['purchase']['products']->quantity = ($item['qty'] != '') ? $item['qty'] : '';
 					$ecommerce['ecommerce']['purchase']['products']->coupon = (!empty($coupons)) ? $coupons : '';	
-				  	$products['price'] =  $products['price'] + $products['product'][$i]->price;
+				  	
 				  $i++;	
 				}
-				$products['total'] = $products['price'] + $products['tax'] + $products['shipping'];
-            
+			$products['revenue'] = (string)($products['price'] + $products['shipping']);
+			//$products['total'] = $products['revenue']+ $products['tax'];
 			//DataLayer Option	
+			
 			
 			$ecommerce['ecommerce']['purchase']['actionField']['id'] = ($order_id != '') ? $order_id : '';
 			$ecommerce['ecommerce']['purchase']['actionField']['affiliation'] = ($affiliation != '') ? $affiliation : 'Online Store';
-			$ecommerce['ecommerce']['purchase']['actionField']['revenue'] = ($products['total'] != '') ? $products['total'] : '';
-			$ecommerce['ecommerce']['purchase']['actionField']['tax'] = ($order->data['cart_tax'] != '') ? $order->data['cart_tax'] : '';
+			$ecommerce['ecommerce']['purchase']['actionField']['revenue'] = ($products['revenue'] != '') ? $products['revenue'] : '';
+			$ecommerce['ecommerce']['purchase']['actionField']['tax'] = ($products['tax'] != '') ? $products['tax'] : '';
 			$ecommerce['ecommerce']['purchase']['actionField']['shipping'] = ( $order->get_total_shipping() != '') ?  $order->get_total_shipping() : '';
 			$ecommerce['ecommerce']['purchase']['actionField']['coupon'] = (!empty($coupons)) ? $coupons : '';			
+			echo "<pre>";
+			echo json_encode($products);
 			
+			exit;
 
             ?>
         <script type="text/javascript">
