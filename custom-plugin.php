@@ -3,7 +3,7 @@
 Plugin Name: Redeal Referral Marketing
 Plugin URI: https://www.redeal.se
 Description: Redeal Referral Marketing
-Version: 1.0.1
+Version: 1.0.3
 Author: Redeal STHLM AB
 Author URI: https://www.redeal.se/en/get-started
 License: GPL2
