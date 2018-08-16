@@ -159,7 +159,8 @@ function add_script_header(){
         <!-- Bhavik Google Tag Manager -->
         <script>
             var containerId = "<?php echo $containerId; ?>";
-
+            console.log("CONTAINER ID");
+            console.log(containerId);
             (function (w, d, s, l, i) {
                 //alert(containerId);
                 w[l] = w[l] || [];
@@ -187,7 +188,9 @@ function add_script_header(){
 			}
 			//no more get parameters in the url
 			else {
-				$url = $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+
+				$url = $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];			
+				
 				$template_name = strpos($url,'/order-received/') === false ? '/view-order/' : '/order-received/';
 				if (strpos($url,$template_name) !== false) {
 					$start = strpos($url,$template_name);
@@ -195,11 +198,12 @@ function add_script_header(){
 					$order_id = substr($first_part, 0, strpos($first_part, '/'));
 				}
 			}
+			
             $order = new WC_Order( $order_id );
-		
+
 			$coupons = $order->get_used_coupons();
    			$items = $order->get_items();
-			
+
 			
 			$products = array();
 			$ecommerce = array();
@@ -209,7 +213,7 @@ function add_script_header(){
 			$products['tax'] = ($order->data['total_tax'] != '') ? $order->data['total_tax'] : '';
 			$products['shipping'] = ( $order->get_total_shipping() != '') ?  $order->get_total_shipping() : '';
 			$products['currency'] = ($order->data['currency'] != '') ? $order->data['currency'] : '';
-			$products['country'] = ($default['country'] != '') ? $order->data['country'] : 'SE';
+			$products['country'] = ($order->data['country'] != '') ? $order->data['country'] : 'SE';
 			$products['language'] = ($order->data['language'] != '') ? $order->data['language'] : 'sv';
 			$products['email'] = ($order->data['billing']['email'] != '') ? $order->data['billing']['email'] : '';
 			$products['phone'] = ($order->data['billing']['phone'] != '') ? $order->data['billing']['phone'] : '';
@@ -264,12 +268,16 @@ function add_script_header(){
 			$ecommerce['ecommerce']['purchase']['actionField']['tax'] = ($products['tax'] != '') ? $products['tax'] : '';
 			$ecommerce['ecommerce']['purchase']['actionField']['shipping'] = ( $order->get_total_shipping() != '') ?  $order->get_total_shipping() : '';
 			$ecommerce['ecommerce']['purchase']['actionField']['coupon'] = (!empty($coupons)) ? $coupons : '';
+
+
             ?>
         <script type="text/javascript">
-			//debugger++;
 			var checkOutData = <?php echo json_encode($products); ?>;
+			console.log("REDEAL CHECKOUT DATA");
+			console.log(checkOutData);
 			var pushCheckOutData = <?php echo json_encode($ecommerce); ?>;
-
+            console.log("GOOGLE TAG MANAGER CHECKOUT DATA");
+            console.log(pushCheckOutData);
             redeal('checkout', checkOutData );
 			
             window.dataLayer = window.dataLayer || [];
