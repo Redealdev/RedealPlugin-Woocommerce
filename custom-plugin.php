@@ -46,7 +46,7 @@ License: GPL2
 
             <?php
         }
-        function redeal_field_input($args){
+       /* function redeal_field_input($args){
             $options = get_option( 'redeal_options' );
             ?>
 			<input type="text" id="redeal_field_container"
@@ -54,7 +54,7 @@ License: GPL2
 				   name="redeal_options[<?php echo esc_attr( $args['label_for'] ); ?>]"
 				   value="<?php echo esc_attr( $options[$args['label_for']] ); ?>">
             <?php
-        }
+        }*/
 		/*function redeal_field_environment($args){
 			
 			
@@ -153,12 +153,12 @@ function add_script_header(){
         //check option is enable.
         if($options['redeal_field_enable'] == 1){
             if(isset($options['redeal_field_container'])){
-                $containerId = $options['redeal_field_container'];
+                //$containerId = $options['redeal_field_container'];
             }
         ?>
         <!-- Bhavik Google Tag Manager -->
-        <script>
-            var containerId = "<?php echo $containerId; ?>";
+      <!--  <script>
+            var containerId = "<?php //echo $containerId; ?>";
             console.log("CONTAINER ID");
             console.log(containerId);
             (function (w, d, s, l, i) {
@@ -174,7 +174,7 @@ function add_script_header(){
                 j.src =
                     'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
                 f.parentNode.insertBefore(j, f);
-            })(window, document, 'script', 'dataLayer', containerId);</script>
+            })(window, document, 'script', 'dataLayer', containerId);</script>-->
         
         <?php
             global $wp;
@@ -189,8 +189,9 @@ function add_script_header(){
 			//no more get parameters in the url
 			else {
 
-				$url = $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];			
-				
+				$url = $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+				//echo $url;exit;
+				//$url = "swecandy.se/kassan/order-received/9015/?key=wc_order_5b7281f1b69ee";
 				$template_name = strpos($url,'/order-received/') === false ? '/view-order/' : '/order-received/';
 				if (strpos($url,$template_name) !== false) {
 					$start = strpos($url,$template_name);
@@ -198,7 +199,7 @@ function add_script_header(){
 					$order_id = substr($first_part, 0, strpos($first_part, '/'));
 				}
 			}
-			
+			//echo $order_id;exit;
             $order = new WC_Order( $order_id );
 
 			$coupons = $order->get_used_coupons();
@@ -206,7 +207,7 @@ function add_script_header(){
 
 			
 			$products = array();
-			$ecommerce = array();
+			//$ecommerce = array();
 			$products['id'] = ($order_id != '') ? $order_id : '';
 			$products['total'] = ($order->data['total'] != '') ? $order->data['total'] : '';
 			$products['price'] = 0;
@@ -245,7 +246,7 @@ function add_script_header(){
 				  }
 			 
 				  
-				// DataLayer
+				/*// DataLayer
 				  $ecommerce['ecommerce']['purchase']['products']->id = ($item['product_id'] != '') ? $item['product_id'] : '';
 					$ecommerce['ecommerce']['purchase']['products']->name = ($item['name'] != '') ? $item['name'] : '';
 					$ecommerce['ecommerce']['purchase']['products']->price = ($item['total'] != '') ? $item['total'] : '';
@@ -253,7 +254,7 @@ function add_script_header(){
 					$ecommerce['ecommerce']['purchase']['products']->category = (!empty($term_list)) ? implode(',',$term_list) : '';
 					$ecommerce['ecommerce']['purchase']['products']->variant = ($product->get_formatted_name() != '') ? $product->get_formatted_name() : '';
 					$ecommerce['ecommerce']['purchase']['products']->quantity = ($item['qty'] != '') ? $item['qty'] : '';
-					$ecommerce['ecommerce']['purchase']['products']->coupon = (!empty($coupons)) ? $coupons : '';	
+					$ecommerce['ecommerce']['purchase']['products']->coupon = (!empty($coupons)) ? $coupons : '';	*/
 				  	
 				  $i++;	
 				}
@@ -262,12 +263,12 @@ function add_script_header(){
 			//DataLayer Option	
 			
 			
-			$ecommerce['ecommerce']['purchase']['actionField']['id'] = ($order_id != '') ? $order_id : '';
+			/*$ecommerce['ecommerce']['purchase']['actionField']['id'] = ($order_id != '') ? $order_id : '';
 			$ecommerce['ecommerce']['purchase']['actionField']['affiliation'] = ($affiliation != '') ? $affiliation : 'Online Store';
 			$ecommerce['ecommerce']['purchase']['actionField']['revenue'] = ($products['revenue'] != '') ? $products['revenue'] : '';
 			$ecommerce['ecommerce']['purchase']['actionField']['tax'] = ($products['tax'] != '') ? $products['tax'] : '';
 			$ecommerce['ecommerce']['purchase']['actionField']['shipping'] = ( $order->get_total_shipping() != '') ?  $order->get_total_shipping() : '';
-			$ecommerce['ecommerce']['purchase']['actionField']['coupon'] = (!empty($coupons)) ? $coupons : '';
+			$ecommerce['ecommerce']['purchase']['actionField']['coupon'] = (!empty($coupons)) ? $coupons : '';*/
 
 
             ?>
@@ -275,13 +276,13 @@ function add_script_header(){
 			var checkOutData = <?php echo json_encode($products); ?>;
 			console.log("REDEAL CHECKOUT DATA");
 			console.log(checkOutData);
-			var pushCheckOutData = <?php echo json_encode($ecommerce); ?>;
+			/*var pushCheckOutData = echo json_encode($ecommerce); ?>;
             console.log("GOOGLE TAG MANAGER CHECKOUT DATA");
-            console.log(pushCheckOutData);
+            console.log(pushCheckOutData);*/
             redeal('checkout', checkOutData );
 			
-            window.dataLayer = window.dataLayer || [];
-            dataLayer.push(pushCheckOutData);
+            /*window.dataLayer = window.dataLayer || [];
+            dataLayer.push(pushCheckOutData);*/
         </script>
         <!-- End Google Tag Manager -->
 

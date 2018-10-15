@@ -43,7 +43,7 @@ function redeal_settings_init() {
         ]
     );*/
 	
-    add_settings_field(
+   /* add_settings_field(
         'redeal_field_container',
         __( 'Container Public ID:', 'redeal' ),
         'redeal_field_input',
@@ -54,7 +54,7 @@ function redeal_settings_init() {
             'class' => 'redeal_row',
             'redeal_custom_data' => 'container_public_id',
         ]
-    );
+    );*/
 
 }
 
