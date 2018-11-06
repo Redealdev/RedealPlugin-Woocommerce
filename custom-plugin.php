@@ -3,7 +3,7 @@
 Plugin Name: Redeal Referral Marketing
 Plugin URI: https://www.redeal.se
 Description: Redeal Referral Marketing
-Version: 1.0.3
+Version: 1.0.4
 Author: Redeal STHLM AB
 Author URI: https://www.redeal.se/en/get-started
 License: GPL2
@@ -18,7 +18,6 @@ License: GPL2
 			<p id="<?php echo esc_attr( $args['id'] ); ?>"><?php esc_html_e( 'Set below details to display redeal popup on thank you page.', 'wporg' ); ?></p>
             <?php
         }
-
 
         function redeal_field_configuration( $args ) {
 			
@@ -46,37 +45,7 @@ License: GPL2
 
             <?php
         }
-       /* function redeal_field_input($args){
-            $options = get_option( 'redeal_options' );
-            ?>
-			<input type="text" id="redeal_field_container"
-				   data-custom="<?php echo esc_attr( $args['redeal_custom_data'] ); ?>"
-				   name="redeal_options[<?php echo esc_attr( $args['label_for'] ); ?>]"
-				   value="<?php echo esc_attr( $options[$args['label_for']] ); ?>">
-            <?php
-        }*/
-		/*function redeal_field_environment($args){
-			
-			
-			$options = get_option( 'redeal_options' );
-			
-			?>
-			<select id="<?php echo esc_attr( $args['label_for'] ); ?>"
-					data-custom="<?php echo esc_attr( $args['redeal_custom_data'] ); ?>"
-					name="redeal_options[<?php echo esc_attr( $args['label_for'] ); ?>]"
-			>
-				<option value="1" <?php echo isset( $options[ $args['label_for'] ] ) ? ( selected( $options[ $args['label_for'] ], '1', false ) ) : ( '' ); ?>>
-                    <?php esc_html_e( 'Live', 'redeal' ); ?>
-				</option>
-				<option value="0" <?php echo isset( $options[ $args['label_for'] ] ) ? ( selected( $options[ $args['label_for'] ], '0', false ) ) : ( '' ); ?>>
-                    <?php esc_html_e( 'Test', 'redeal' ); ?>
-				</option>
-			</select>
-			<p class="description">				
-                <?php esc_html_e( 'Set Environment for Redeal Referralmarketing extension', 'redeal' ); ?>
-			</p>
-			<?php
-		}*/
+       
         /**
          * top level menu
          */
@@ -91,7 +60,6 @@ License: GPL2
             );
 
         }
-
         /**
          * register our wporg_options_page to the admin_menu action hook
          */
@@ -106,16 +74,11 @@ License: GPL2
             if ( ! current_user_can( 'manage_options' ) ) {
                 return;
             }
-
-            // add error/update messages
-
-            // check if the user have submitted the settings
             // wordpress will add the "settings-updated" $_GET parameter to the url
             if ( isset( $_GET['settings-updated'] ) ) {
                 // add settings saved message with the class of "updated"
                 add_settings_error( 'redeal_messages', 'redeal_message', __( 'Settings Saved', 'redeal' ), 'updated' );
             }
-
             // show error/update messages
             settings_errors( 'redeal_messages' );
             ?>
@@ -136,8 +99,8 @@ License: GPL2
             <?php
         }
 	}
-function add_script_header(){ 
-	error_reporting(0);
+function redeal_add_script_header(){ 
+	
 	$options = get_option( 'redeal_options' );
 	
 	?>
@@ -147,51 +110,26 @@ function add_script_header(){
         })(window, document, 'script', window.location.protocol + '//widget.redeal.se/js/redeal.js', 'redeal');
     </script>	
 	<?php 
-     if(is_wc_endpoint_url( 'order-received' )) {
-        
+     if(is_wc_endpoint_url( 'order-received' )) {        
 
         //check option is enable.
         if($options['redeal_field_enable'] == 1){
             if(isset($options['redeal_field_container'])){
                 //$containerId = $options['redeal_field_container'];
-            }
-        ?>
-        <!-- Bhavik Google Tag Manager -->
-      <!--  <script>
-            var containerId = "<?php //echo $containerId; ?>";
-            console.log("CONTAINER ID");
-            console.log(containerId);
-            (function (w, d, s, l, i) {
-                //alert(containerId);
-                w[l] = w[l] || [];
-                w[l].push({
-                    'gtm.start': new Date().getTime(), event: 'gtm.js'
-                });
-                var f = d.getElementsByTagName(s)[0],
-                    j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
-
-                j.async = true;
-                j.src =
-                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-                f.parentNode.insertBefore(j, f);
-            })(window, document, 'script', 'dataLayer', containerId);</script>-->
-        
-        <?php
+            }        
             global $wp;
             //check if on view-order page and get parameter is available
-			if(isset($_GET['view-order'])) {
-				$order_id = $_GET['view-order'];
+			if(isset($_REQUEST['view-order']) && $_REQUEST['view-order'] != '') {
+				$order_id = $_REQUEST['view-order'];
 			}
 			//check if on view order-received page and get parameter is available
-			else if(isset($_GET['order-received'])) {
-				$order_id = $_GET['order-received'];
+			else if(isset($_REQUEST['order-received']) && $_REQUEST['order-received']) != '') {
+				$order_id = $_REQUEST['order-received'];
 			}
 			//no more get parameters in the url
 			else {
 
-				$url = $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-				//echo $url;exit;
-				//$url = "swecandy.se/kassan/order-received/9015/?key=wc_order_5b7281f1b69ee";
+				$url = $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];				
 				$template_name = strpos($url,'/order-received/') === false ? '/view-order/' : '/order-received/';
 				if (strpos($url,$template_name) !== false) {
 					$start = strpos($url,$template_name);
@@ -201,7 +139,6 @@ function add_script_header(){
 			}
 			//echo $order_id;exit;
             $order = new WC_Order( $order_id );
-
 			$coupons = $order->get_used_coupons();
    			$items = $order->get_items();
 
@@ -244,50 +181,19 @@ function add_script_header(){
 					  $products['price'] = (string)($products['price'] + $products['product'][$i]->price);
 					 
 				  }
-			 
-				  
-				/*// DataLayer
-				  $ecommerce['ecommerce']['purchase']['products']->id = ($item['product_id'] != '') ? $item['product_id'] : '';
-					$ecommerce['ecommerce']['purchase']['products']->name = ($item['name'] != '') ? $item['name'] : '';
-					$ecommerce['ecommerce']['purchase']['products']->price = ($item['total'] != '') ? $item['total'] : '';
-					$ecommerce['ecommerce']['purchase']['products']->brand = ($item['brand'] != '') ? $item['brand'] : '';
-					$ecommerce['ecommerce']['purchase']['products']->category = (!empty($term_list)) ? implode(',',$term_list) : '';
-					$ecommerce['ecommerce']['purchase']['products']->variant = ($product->get_formatted_name() != '') ? $product->get_formatted_name() : '';
-					$ecommerce['ecommerce']['purchase']['products']->quantity = ($item['qty'] != '') ? $item['qty'] : '';
-					$ecommerce['ecommerce']['purchase']['products']->coupon = (!empty($coupons)) ? $coupons : '';	*/
-				  	
 				  $i++;	
 				}
-			$products['revenue'] = (string)($products['price'] + $products['shipping']);
-			//$products['total'] = $products['revenue']+ $products['tax'];
-			//DataLayer Option	
-			
-			
-			/*$ecommerce['ecommerce']['purchase']['actionField']['id'] = ($order_id != '') ? $order_id : '';
-			$ecommerce['ecommerce']['purchase']['actionField']['affiliation'] = ($affiliation != '') ? $affiliation : 'Online Store';
-			$ecommerce['ecommerce']['purchase']['actionField']['revenue'] = ($products['revenue'] != '') ? $products['revenue'] : '';
-			$ecommerce['ecommerce']['purchase']['actionField']['tax'] = ($products['tax'] != '') ? $products['tax'] : '';
-			$ecommerce['ecommerce']['purchase']['actionField']['shipping'] = ( $order->get_total_shipping() != '') ?  $order->get_total_shipping() : '';
-			$ecommerce['ecommerce']['purchase']['actionField']['coupon'] = (!empty($coupons)) ? $coupons : '';*/
-
-
+			$products['revenue'] = (string)($products['price'] + $products['shipping']);			
             ?>
         <script type="text/javascript">
 			var checkOutData = <?php echo json_encode($products); ?>;
 			console.log("REDEAL CHECKOUT DATA");
-			console.log(checkOutData);
-			/*var pushCheckOutData = echo json_encode($ecommerce); ?>;
-            console.log("GOOGLE TAG MANAGER CHECKOUT DATA");
-            console.log(pushCheckOutData);*/
-            redeal('checkout', checkOutData );
-			
-            /*window.dataLayer = window.dataLayer || [];
-            dataLayer.push(pushCheckOutData);*/
-        </script>
-        <!-- End Google Tag Manager -->
+			console.log(checkOutData);		
+            redeal('checkout', checkOutData );			
+        </script>        
 
         <?php
         }
     }
 }
-add_action('wp_head','add_script_header', 10, 1);
+add_action('wp_head','redeal_add_script_header', 10, 1);

@@ -28,34 +28,8 @@ function redeal_settings_init() {
             'class' => 'redeal_row',
             'redeal_custom_data' => 'enable',
         ]
-    );
-	  
-    /*add_settings_field(
-        'redeal_field_environment', // as of WP 4.6 this value is used only internally        
-        __( 'Environment:', 'redeal' ),
-        'redeal_field_environment',
-        'redeal',
-        'redeal_section_developers',
-        [
-            'label_for' => 'redeal_field_environment',
-            'class' => 'redeal_row',
-            'redeal_custom_data' => 'environment',
-        ]
-    );*/
-	
-   /* add_settings_field(
-        'redeal_field_container',
-        __( 'Container Public ID:', 'redeal' ),
-        'redeal_field_input',
-        'redeal',
-        'redeal_section_developers',
-        [
-            'label_for' => 'redeal_field_container',
-            'class' => 'redeal_row',
-            'redeal_custom_data' => 'container_public_id',
-        ]
-    );*/
-
+    );	  
+   
 }
 
 /**
